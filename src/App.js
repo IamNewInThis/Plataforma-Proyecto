@@ -7,7 +7,7 @@ import {BrowserRouter, Navigate, Route,Routes} from "react-router-dom"
 import Dashboard from "scenes/dashboard"
 import Layout from "scenes/layout"
 import Productos from "scenes/productos"
-
+import Agregar from "scenes/agregar";
 function App() {
   const mode = useSelector((state)=> state.global.mode);
   const theme = useMemo(()=>createTheme(themeSettings(mode)),[mode]);
@@ -22,6 +22,7 @@ function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />}></Route>
               <Route path="/dashboard" element={<Dashboard/>}></Route>
               <Route path="/productos" element={<Productos/>}></Route>
+              <Route path="/agregar" element={<Agregar/>}></Route>
             </Route>
           </Routes> 
         </ThemeProvider>
