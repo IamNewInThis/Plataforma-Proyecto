@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import Header from 'components/Header'
 import Inputs from 'components/Inputs'
 import InputList from 'components/InputList' 
@@ -17,12 +17,15 @@ import {
 
 const Agregar = () => {
     const theme = useTheme();
+
     const isNonMobile = useMediaQuery("(min-width:1000px)")
+
     const options = [
         { label: 'Guitarra Electrica', value: 1 },
         { label: 'Guitarra Acústica', value: 2 },
         { label: 'Guitarra Electroacústica', value: 3 },
-      ];
+    ];
+
     const options2 = [
         { label: 'Guitarras',value: 1 },
         { label: 'Percusión',value: 2 },
@@ -32,8 +35,15 @@ const Agregar = () => {
         { label: 'Baterías Electrónica',value: 6},
         { label: 'Amplificadores',value:7 },
         { label: 'Accesorios', value: 8},
-      ];
-      
+    ];
+
+    const [error, setError] = useState(null);
+
+    const [showErrors, setShowErrors] = useState(false);
+
+    const handleClick = () => {
+        setShowErrors(true);
+      };
     return (
         <Box m="1.5rem 2.5rem">
             <Header titulo={"Agregar Productos"}></Header>
@@ -100,7 +110,7 @@ const Agregar = () => {
                         <CardContent>
                             <Box display="flex" alignItems="center">
                                 <Typography variant='h5' component={"div"}>Stock:</Typography>
-                                <Inputs placeholder={"Stock"}></Inputs>
+                                <Inputs placeholder={"Stock"} ></Inputs>
                             </Box>
                         </CardContent>
 
@@ -136,10 +146,11 @@ const Agregar = () => {
                         backgroundColor: theme.palette.background.alt,
                         borderRadius:"0.55rem"
                     }}>
-                         <CardContent>
+                        <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Button variant="contained" color='success' fullWidth onClick={() => console.log("holaa")}>Agregar</Button>
+                                <Button variant="contained" color='success' fullWidth onClick={()=>setShowErrors(true)}>Agregar</Button>
                             </Box>
+                            {error && <Typography color="error">{error}</Typography>}
                         </CardContent>
                     </Card>
             </Box>
