@@ -9,15 +9,18 @@ import {
     Typography,
     Rating,
     useTheme,
-    useMediaQuery,
 }from "@mui/material"
 
 import Header from 'components/Header'
 import imagen from '../../assets/bajo-electrico-de-5-cuerdad-ibanez-sr505e-bm-211606-1.webp'
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Productos = () => {
+
     const theme = useTheme();
-    const isNonMobile = useMediaQuery("(min-width:1000px)")
+
+    const isNonMobile = useMediaQuery("(min-width:600px)")
+    
     return (
         <Box m="1.5rem 2.5rem">
             <Header titulo={"Productos"}></Header>

@@ -33,8 +33,6 @@ const Inputs = ({ placeholder, error,type }) => {
         sx={{ width: '100%' }}
         value={inputValue}
         onChange={handleChange}
-        error={Boolean(errorMessage)}
-        helperText={errorMessage}
       />
     </Box>
   );
