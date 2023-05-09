@@ -43,7 +43,17 @@ const Agregar = () => {
 
     const handleClick = () => {
         setShowErrors(true);
-      };
+    };
+
+    // Funcion para subir imagenes
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedImage(file);
+    };
+
+    
     return (
         <Box m="1.5rem 2.5rem">
             <Header titulo={"Agregar Productos"}></Header>
@@ -59,14 +69,15 @@ const Agregar = () => {
                 sx={{
                     "& > div":{ gridColumn: isNonMobile ? undefined : "span 4"}
                 }}>
+                    {/* Container */}
                     <Card sx={{
                         backgroundColor: theme.palette.background.alt,
                         borderRadius:"0.55rem",
 
                     }}>
                         <CardContent>
-                            <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"}>Nombre:</Typography>
+                            <Box display="flex" alignItems="center" >
+                                <Typography variant='h5' component={"div"} margin={'-6px'}>Nombre:</Typography>
                                 <Inputs placeholder={"Nombre"}></Inputs>
                             </Box>
                         </CardContent>
@@ -80,57 +91,63 @@ const Agregar = () => {
 
                         <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"}>Marca:</Typography>
+                                <Typography variant='h5' component={"div"} marginRight={'17px'}>Marca:</Typography>
                                 <InputList options={options} label={'Marcas'}/>
                             </Box>
                         </CardContent>
 
                         <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"}>Stock:</Typography>
+                                <Typography variant='h5' component={"div"} marginRight={'3px'}>Stock:</Typography>
                                 <Inputs placeholder={"Stock"}></Inputs>
                             </Box>
                         </CardContent>
 
-
-                        
+                        <CardContent>
+                            <Box display="flex" alignItems="center">
+                                <Typography variant='h5' component={"div"}>Imagen:</Typography>
+                                <input type='file' id='imagenInput' accept='image/' onChange={handleImageChange}></input>
+                            </Box>
+                        </CardContent>
                     </Card>
 
+                    {/* Container */}
                     <Card sx={{
                         backgroundColor: theme.palette.background.alt,
                         borderRadius:"0.55rem"
                     }}>
                          <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"}>Marca:</Typography>
+                                <Typography variant='h5' component={"div"} marginRight={'1.1rem'}>Marca:</Typography>
                                 <Inputs placeholder={"Marca"}></Inputs>
                             </Box>
                         </CardContent>
 
                         <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"}>Stock:</Typography>
+                                <Typography variant='h5' component={"div"}  marginRight={'1.3rem'}>Stock:</Typography>
                                 <Inputs placeholder={"Stock"} ></Inputs>
                             </Box>
                         </CardContent>
 
                         <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"} >Categoria:</Typography>
-                                <InputList options={options2}label={'Categorias'} />
+                                <Typography variant='h5' component={"div"} marginRight={'8px'}>Categoria:</Typography>
+                                <InputList options={options2} label={'Categorias'} />
                             </Box>
                         </CardContent>
 
                         <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"} >Sub Categoria:</Typography>
+                                <Typography variant='h5' component={"div"} marginRight={'-8px'}>Sub Categoria:</Typography>
                                 <InputList options={options2}label={'Categorias'} />
                             </Box>
                         </CardContent>
 
                     </Card>
             </Box>
-
+                
+            {/* Boton */}
             <Box
                 margin={""}
                 mt="20px" 
@@ -148,7 +165,7 @@ const Agregar = () => {
                     }}>
                         <CardContent>
                             <Box display="flex" alignItems="center">
-                                <Button variant="contained" color='success' fullWidth onClick={()=>setShowErrors(true)}>Agregar</Button>
+                                <Button variant="contained" color='success' fullWidth type='submit' onClick={()=>setShowErrors(true)}>Agregar</Button>
                             </Box>
                             {error && <Typography color="error">{error}</Typography>}
                         </CardContent>

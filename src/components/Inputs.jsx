@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button } from '@mui/material';
 
-const Inputs = ({ placeholder, error }) => {
+const Inputs = ({ placeholder, error,type }) => {
   const [inputValue, setInputValue] = useState('');
   const [showErrors, setShowErrors] = useState(false);
 

@@ -31,10 +31,12 @@ const Productos = () => {
                 sx={{
                     "& > div":{ gridColumn: isNonMobile ? undefined : "span 4"}
                 }}>
+                    {/* CONTAINER */}
                     <Card sx={{
                         backgroundColor: theme.palette.background.alt,
                         borderRadius:"0.55rem"
                     }}>
+                        
                         <CardContent>
                             <Typography sx={{fontSize:14}} color={theme.palette.secondary[700]} gutterBottom>Bajo Electrico</Typography>
                             <Typography variant='h5' component={"div"}>Bajo eléctrico Ibanez SR505E 5 cuerdas - Brown Mahogany</Typography>
@@ -67,6 +69,7 @@ const Productos = () => {
                         </CardContent>
                     </Card>
 
+                    {/* CONTAINER */}
                     <Card sx={{
                         backgroundColor: theme.palette.background.alt,
                         borderRadius:"0.55rem"
