@@ -74,7 +74,7 @@ const Agregar = () => {
                         backgroundColor: theme.palette.background.alt,
                         borderRadius:"0.55rem",
 
-                    }}>
+                    }}>     
                         <CardContent>
                             <Box display="flex" alignItems="center" >
                                 <Typography variant='h5' component={"div"} margin={'-6px'}>Nombre:</Typography>
@@ -86,13 +86,6 @@ const Agregar = () => {
                             <Box display="flex" alignItems="center">
                                 <Typography variant='h5' component={"div"}>Precio:</Typography>
                                 <Inputs placeholder={"Precio"}></Inputs>
-                            </Box>
-                        </CardContent>
-
-                        <CardContent>
-                            <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"} marginRight={'17px'}>Marca:</Typography>
-                                <InputList options={options} label={'Marcas'}/>
                             </Box>
                         </CardContent>
 
@@ -120,13 +113,6 @@ const Agregar = () => {
                             <Box display="flex" alignItems="center">
                                 <Typography variant='h5' component={"div"} marginRight={'1.1rem'}>Marca:</Typography>
                                 <Inputs placeholder={"Marca"}></Inputs>
-                            </Box>
-                        </CardContent>
-
-                        <CardContent>
-                            <Box display="flex" alignItems="center">
-                                <Typography variant='h5' component={"div"}  marginRight={'1.3rem'}>Stock:</Typography>
-                                <Inputs placeholder={"Stock"} ></Inputs>
                             </Box>
                         </CardContent>
 
