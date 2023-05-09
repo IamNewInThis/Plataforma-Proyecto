@@ -40,7 +40,7 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
-    text: "Client Facing",
+    text: "Tienda",
     icon: null,
   },
   {
@@ -62,10 +62,6 @@ const navItems = [
   {
     text: "Monthly",
     icon: <CalendarMonthOutlined />,
-  },
-  {
-    text: "Breakdown",
-    icon: <PieChartOutlined />,
   },
 ];
 

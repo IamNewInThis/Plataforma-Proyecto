@@ -58,17 +58,18 @@ const Agregar = () => {
         <Box m="1.5rem 2.5rem">
             <Header titulo={"Agregar Productos"}></Header>
             
-            <Box
-                margin={""}
-                mt="20px" 
-                display={"grid"} 
-                gridTemplateColumns={"repeat(2, minmax(0, 1fr))"}
-                justifyContent={"space-between"}
-                rowGap={"20px"}
-                columnGap={"1.33%"} //SEPARACION DEL MEDIO DE LAS CARD
-                sx={{
-                    "& > div":{ gridColumn: isNonMobile ? undefined : "span 4"}
-                }}>
+            <form>
+                <Box
+                    margin={""}
+                    mt="20px" 
+                    display={"grid"} 
+                    gridTemplateColumns={"repeat(2, minmax(0, 1fr))"}
+                    justifyContent={"space-between"}
+                    rowGap={"20px"}
+                    columnGap={"1.33%"} //SEPARACION DEL MEDIO DE LAS CARD
+                    sx={{
+                        "& > div":{ gridColumn: isNonMobile ? undefined : "span 4"}
+                    }}>
                     {/* Container */}
                     <Card sx={{
                         backgroundColor: theme.palette.background.alt,
@@ -131,8 +132,9 @@ const Agregar = () => {
                         </CardContent>
 
                     </Card>
-            </Box>
-                
+                </Box>
+            </form>
+
             {/* Boton */}
             <Box
                 margin={""}
