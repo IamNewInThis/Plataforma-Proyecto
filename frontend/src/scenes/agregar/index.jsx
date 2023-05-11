@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios'
 import Header from "components/Header";
 import Inputs from "components/Inputs";
@@ -11,49 +11,54 @@ import {
   Typography,
   useTheme,
   TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import LeyendaError from "components/LeyendaError"; // Importar LeyendaError
 
 const Agregar = () => {
+
+
   //COLORES
   const theme = useTheme();
 
   // ADAPTART PANTALLA
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  //Opciones
-  const options = [
-    { label: "Guitarra Electrica", value: 1 },
-    { label: "Guitarra Acústica", value: 2 },
-    { label: "Guitarra Electroacústica", value: 3 },
-  ];
-
-  //Opciones 2
-  const options2 = [
-    { label: "Guitarras", value: 1 },
-    { label: "Percusión", value: 2 },
-    { label: "Pianos", value: 3 },
-    { label: "Bajos", value: 4 },
-    { label: "Baterías Acústicas", value: 5 },
-    { label: "Baterías Electrónica", value: 6 },
-    { label: "Amplificadores", value: 7 },
-    { label: "Accesorios", value: 8 },
-  ];
 
   // Funcion para subir imagenes
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    setSelectedImage(file);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setSelectedImage(reader.result);
+    };
+  }
+
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+
+  const handleCategoriaChange = (event) => {
+    const categoriaSeleccionada = event.target.value;
+    setCategoriaSeleccionada(categoriaSeleccionada);
+    setFormData({ ...formData, categoria: { value: categoriaSeleccionada, error: false, helperText: "" } });
   };
+
 
   //inputs
   const [formData, setFormData] = useState({
     nombre: { value: "", isValid: false },
     precio: { value: "", isValid: false },
     marca: { value: "", isValid: false },
+    stock: { value: "", isValid: false },
+    imagen: { value: selectedImage, isValid: false },
+    categoria: { value: categoriaSeleccionada, isValid: false },
+    subcategoria: { value: "", isValid: false },
+
   });
 
   //Expresiones de validacion
@@ -74,26 +79,53 @@ const Agregar = () => {
         [name]: { value, isValid },
       }));
     } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: { value, isValid: expresiones[name].test(value) },
-      }));
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: { value, isValid: value !== '' },
+          }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     // Verificar si todos los campos son válidos
     const isFormValid = Object.values(formData).every((field) => field.isValid);
     if (isFormValid) {
       // Realizar acciones con los datos del formulario si es válido
       console.log("Formulario válido", formData);
+
     } else {
       // Mostrar mensajes de error o tomar otras acciones si es inválido
       console.log("Formulario inválido");
     }
   };
+  const postData = new FormData();
+  postData.append("nombre", formData.nombre.value);
+  postData.append("precio", formData.precio.value);
+  postData.append("marca", formData.marca.value);
+  postData.append("stock", formData.stock.value);
+  postData.append("imagen", selectedImage);
+  postData.append("categoria", formData.categoria.value);
+  postData.append("subcategoria", formData.subcategoria.value);
+
+  //METODO PARA INGRESAR DATOS
+  
+  const handlePost = async (event) => {
+    event.preventDefault();
+    try {
+      console.log(postData)
+      const res = await axios.post('http://localhost:3001/api/create', postData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }})
+      console.log(res.data)
+    } catch (e) {
+      alert(e)
+    }
+
+  };
+
+
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -165,6 +197,28 @@ const Agregar = () => {
               )}
             </CardContent>
 
+             {/* STOCK */}
+             <CardContent>
+              <Box display="flex" alignItems="center">
+                <Typography variant="h5" component={"div"} marginRight={"21px"}>
+                  Precio:
+                </Typography>
+                <TextField
+                  color="success"
+                  fullWidth
+                  variant="outlined"
+                  type="number"
+                  name="stock"
+                  value={formData.stock.value}
+                  onChange={handleChange}
+                  placeholder="Stock"
+                />
+              </Box>
+              {!formData.precio.isValid && (
+                <span style={{ color: "red" }}>Error en el Precio</span>
+              )}
+            </CardContent>
+
             {/* IMAGEN */}
             <CardContent>
               <Box display="flex" alignItems="center">
@@ -213,22 +267,46 @@ const Agregar = () => {
                 <span style={{ color: "red" }}>Error en la Marca</span>
               )}
             </CardContent>
-
+            {/* CATEGORIA */}
             <CardContent>
               <Box display="flex" alignItems="center">
                 <Typography variant="h5" component={"div"} marginRight={"8px"}>
                   Categoria:
                 </Typography>
-                <InputList options={options2} label={"Categorias"} />
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Categoría</InputLabel>
+                  <Select
+                    name="categoria"
+                    value={formData.categoria.value}
+                    onChange={handleChange}
+                    label="Categoría"
+                  >
+                    <MenuItem value="guitarra">Guitarra</MenuItem>
+                    <MenuItem value="pianos">Pianos</MenuItem>
+                    <MenuItem value="sintetisadores">Sintetisadores</MenuItem>
+                  </Select>
+                </FormControl>
               </Box>
             </CardContent>
-
+            {/* SUBCATEGORIA */}
             <CardContent>
               <Box display="flex" alignItems="center">
                 <Typography variant="h5" component={"div"} marginRight={"-8px"}>
                   Sub Categoria:
                 </Typography>
-                <InputList options={options2} label={"Categorias"} />
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Categoría</InputLabel>
+                  <Select
+                    name="subcategoria"
+                    value={formData.subcategoria.value}
+                    onChange={handleChange}
+                    label="SubCategoría"
+                  >
+                    <MenuItem value="guitarra">Guitarra</MenuItem>
+                    <MenuItem value="pianos">Pianos</MenuItem>
+                    <MenuItem value="sintetisadores">Sintetisadores</MenuItem>
+                  </Select>
+                </FormControl>
               </Box>
             </CardContent>
           </Card>
@@ -261,6 +339,7 @@ const Agregar = () => {
                 color="success"
                 fullWidth
                 type="submit"
+                onClick={handlePost}
               >
                 Agregar
               </Button>

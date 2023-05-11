@@ -8,7 +8,6 @@ import Dashboard from "scenes/dashboard"
 import Layout from "scenes/layout"
 import Productos from "scenes/productos"
 import Agregar from "scenes/agregar";
-import FeaturedProducts from './FeaturedProducts';
 
 function App() {
   const mode = useSelector((state)=> state.global.mode);
@@ -16,7 +15,6 @@ function App() {
   
   return (
     <div className="App">
-      <FeaturedProducts/>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline/>

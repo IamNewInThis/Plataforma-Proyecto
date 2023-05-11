@@ -6,7 +6,7 @@ const TaskSchema = new Schema({
     precio: {type: Number, required: true, default:0},
     marca: {type: String, required: true},
     stock:{type: Number, required: true , default:0},
-    imagen:{type: String, required: true},
+    imagen:{type: String, required: false},
     categoria: {type: String, required : true},
     subcategoria:{type: String, requeried: true}
 });
