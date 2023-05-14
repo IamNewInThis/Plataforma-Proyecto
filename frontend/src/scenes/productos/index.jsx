@@ -22,12 +22,14 @@ const Productos = () => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 800,
-    height: 550,
+    Maxwidth: 800,
+    Maxheight: 650,
     bgcolor: "background.paper",
-    border: "2px solid #000",
+    border: "2px solid #fff",
     boxShadow: 24,
     p: 4,
+    backgroundColor: "#000",
+    
   };
 
   const [open, setOpen] = React.useState(false);
@@ -99,10 +101,23 @@ const Productos = () => {
                 {producto.precio}
               </Typography>
               <Box maxWidth={"200px"} margin={"0 auto"}>
-                <img src={producto.imagen} width={"200px"}></img>
+                <img
+                  src={producto.imagen}
+                  width={"200px"}
+                  style={{
+                    maxWidth: isNonMobile ? "200px" : "100%", // Utiliza maxWidth y height para asegurarte de que la imagen no se estire en dispositivos móviles
+                    height: "auto",
+                    borderRadius: "10px",
+                    marginBottom: "1rem",
+                  }}
+                ></img>
               </Box>
               <Box display={"flex"} justifyContent={"space-between"}>
-                <Button variant="contained" color="success">
+                <Button
+                  onClick={handleOpen}
+                  variant="contained"
+                  color="success"
+                >
                   Editar
                 </Button>
                 <Button
@@ -119,7 +134,9 @@ const Productos = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
               >
-                <Box sx={style}>
+                <Box
+                  sx={style}
+                >
                   <form>
                     {/* <h3>Formulario</h3> */}
                     <Grid container spacing={2}>
@@ -148,8 +165,10 @@ const Productos = () => {
                   <Box>
                     <Card
                       sx={{
-                        backgroundColor: 600,
+                        backgroundColor: "#000",
                         borderRadius: "0.55rem",
+                        
+                        
                       }}
                     >
                       <CardContent>
@@ -160,7 +179,20 @@ const Productos = () => {
                             fullWidth
                             type="submit"
                           >
-                            Agregar
+                            Modificar
+                          </Button>
+                          <Button
+                            variant="contained"
+                            fullWidth
+                            onClick={handleClose}
+                            sx={{
+                              marginLeft: "10px",
+                              color: "#fff",
+                              bgcolor: "red",
+                              "&:hover": { bgcolor: "rgba(242, 2, 2, 0.864);" },
+                            }}
+                          >
+                            Cancelar
                           </Button>
                         </Box>
                       </CardContent>
