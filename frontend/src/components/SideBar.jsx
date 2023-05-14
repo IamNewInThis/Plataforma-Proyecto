@@ -27,6 +27,7 @@ import {
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
+  AddCircleOutlineOutlined
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -39,7 +40,7 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
-    text: "Client Facing",
+    text: "Tienda",
     icon: null,
   },
   {
@@ -47,8 +48,8 @@ const navItems = [
     icon: <ShoppingCartOutlined />,
   },
   {
-    text: "Customers",
-    icon: <Groups2Outlined />,
+    text: "Agregar",
+    icon: <AddCircleOutlineOutlined/>,
   },
   {
     text: "Ventas",
@@ -61,10 +62,6 @@ const navItems = [
   {
     text: "Monthly",
     icon: <CalendarMonthOutlined />,
-  },
-  {
-    text: "Breakdown",
-    icon: <PieChartOutlined />,
   },
 ];
 
