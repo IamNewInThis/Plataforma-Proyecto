@@ -24,7 +24,7 @@ router.post('/create', async (req, res) => {
 
 router.put('/:id', async (req, res) =>{
     const { nombre, precio, marca, stock, imagen, categoria, subcategoria } = req.body;
-    const task = new Task({ nombre , precio, marca, stock, imagen, categoria, subcategoria });
+    const newTask = { nombre , precio, marca, stock, imagen, categoria, subcategoria };
     await Task.findByIdAndUpdate(req.params.id, newTask);
     res.json('status task update')
 });

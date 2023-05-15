@@ -48,13 +48,13 @@ const NavBar = ({isSidebarOpen, setIsSidebarOpen}) => {
                         paddingLeft: "750px",
                         }}>
                 <FlexBetween gap="1.5rem" >
-                    {/* <IconButton onClick={()=> dispatch(setMode())}>
+                    <IconButton onClick={()=> dispatch(setMode())}>
                         {theme.palette.mode === 'dark' ? (
                             <DarkModeOutlined sx={{fontSize:"25px"}}></DarkModeOutlined>
                         ): (
                             <LightModeOutlined sx={{fontSize:"25px"}}></LightModeOutlined>
                         )}
-                    </IconButton> */}
+                    </IconButton>
                     <IconButton>
                         <SettingsOutlined sx={{fontSize:"25px"}}></SettingsOutlined>
                     </IconButton>
