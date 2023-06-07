@@ -47,14 +47,14 @@ const Task = require('../models/task');
  *         - sub_categoria
  *         - img
  *       example:
- *         id: 1
- *         nombre: penedol
- *         marca: pa tu estres
- *         precio: 56
- *         categoria: jaja
- *         stock: 56
- *         sub_categoria: vamo hacer
- *         img: par de weas
+ *         id: 6461909e49ab54b7b8bxxxxx
+ *         nombre: piano
+ *         marca: roland
+ *         precio: 350000
+ *         categoria: pianos
+ *         stock: 4
+ *         sub_categoria: sub pianos
+ *         img: base64
  */
 
 router.get('/productos', async (req, res) => {
@@ -62,7 +62,7 @@ router.get('/productos', async (req, res) => {
     res.json(tasks)
 });
 
-//GET ALL
+//ESTO ES SOLO UN EJEMPLO EN COMO ESTA ORGANIZADA LA QUERY
 
 // 
 /**
@@ -82,30 +82,159 @@ router.get('/productos', async (req, res) => {
  *                 $ref: '#/components/schemas/Productos'
  */ 
 
+// 
+/**
+ * @swagger
+ * /api/productos/create:
+ *   post:
+ *     summary: Create a new product
+ *     tags: [Productos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Productos'
+ *     responses:
+ *       200:
+ *         description: Product created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Productos'
+ *       400:
+ *         description: Invalid request data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *               example:
+ *                 error: Invalid request data
+ */
 
-router.get('/:id', async (req, res) => {
+/** Obtener toda la lista de productos */
+/**
+ * @swagger
+ * /api/productos:
+ *   get:
+ *     summary: return all productos
+ *     tags: [Productos]
+ *     responses:
+ *        200:
+ *          description: all users
+ *          content:
+ *             application/json:
+ *               schema:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/Productos'
+ */ 
+
+/**BUSCAR PRODUCTO POR ID  */
+/**
+ * @swagger
+ * /api/productos/{id}:
+ *   get:
+ *     summary: Buscar producto por ID
+ *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID del producto a buscar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Producto encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Productos'
+ *       404:
+ *         description: Producto no encontrado
+ */ 
+
+//* METODO ELIMINAR USUARIO/
+
+/**
+ * @swagger
+ * /api/productos/{id}:
+ *   delete:
+ *     summary: Eliminar producto por ID
+ *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID del producto a eliminar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Producto eliminado correctamente
+ *       404:
+ *         description: Producto no encontrado
+ */ 
+//* ACTUALIZAR PRODUCTOS
+
+/**
+ * @swagger
+ * /api/productos/{id}:
+ *   put:
+ *     summary: Actualizar producto por ID
+ *     tags: [Productos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID del producto a actualizar
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             $ref: '#/components/schemas/Productos'
+ *     responses:
+ *       200:
+ *         description: Producto actualizado correctamente
+ *       404:
+ *         description: Producto no encontrado
+ */ 
+
+
+//middleware
+
+
+
+router.get('/productos/:id', async (req, res) => {
     const tasks = await Task.findById(req.params.id);
     res.json(tasks);
 });
 
-router.post('/create', async (req, res) => {
-
-
+router.post('/productos/create', async (req, res) => {
     const { nombre, precio, marca, stock, imagen, categoria, subcategoria } = req.body;
     const task = new Task({ nombre , precio, marca, stock, imagen, categoria, subcategoria });
     await task.save();
-    res.json(' status task saved');
+    res.json(' Producto creado correctamente');
 });
 
-router.put('/:id', async (req, res) =>{
+router.put('/productos/:id', async (req, res) =>{
     const { nombre, precio, marca, stock, imagen, categoria, subcategoria } = req.body;
     const newTask = { nombre , precio, marca, stock, imagen, categoria, subcategoria };
     await Task.findByIdAndUpdate(req.params.id, newTask);
-    res.json('status task update')
+    res.json('Producto actualizado correctamente')
 });
 
-router.delete('/:id', async (req, res) =>{
+router.delete('/productos/:id', async (req, res) =>{
     await Task.findByIdAndRemove(req.params.id);
-    res.json('task removed')
+    res.json('Producto eliminado correctamente')
 });
+
 module.exports = router;

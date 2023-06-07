@@ -41,8 +41,12 @@ app.use('/api-doc',swaggerUI.serve,swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 
 //Routes
 app.use('/api' ,require('./routes/task.routes'));
+
 //static files 
 app.use(express.static(path.join('.', 'public')));
+
+
+//USER
 
 
 //starting the server

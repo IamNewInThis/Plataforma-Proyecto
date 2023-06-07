@@ -40,7 +40,7 @@ const Productos = () => {
   }, []);
   const fetchProducts = () => {
     axios
-      .get("http://localhost:3001/api") //api de la base de datos
+      .get("http://localhost:3001/api/productos") //api de la base de datos
       .then((res) => {
         setProducts(res.data);
       })
@@ -52,7 +52,7 @@ const Productos = () => {
   //$Metodo para eliminar productos por ID
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3001/api/${id}`).then(() => {
+    axios.delete(`http://localhost:3001/api/productos/${id}`).then(() => {
       setProducts(products.filter((products) => products.id !== id));
       window.location.reload();
     });
@@ -74,7 +74,7 @@ const Productos = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .put(`http://localhost:3001/api/${editedProduct._id}`, {
+      .put(`http://localhost:3001/api/productos/${editedProduct._id}`, {
         nombre: editedProduct.nombre,
         precio: editedProduct.precio,
         marca: editedProduct.marca,

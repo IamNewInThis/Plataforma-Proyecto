@@ -112,7 +112,7 @@ const Agregar = () => {
     event.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:3001/api/create",
+        "http://localhost:3001/api/productos/create",
         postData,
         {
           headers: {

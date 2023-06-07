@@ -8,6 +8,7 @@ import Dashboard from "scenes/dashboard"
 import Layout from "scenes/layout"
 import Productos from "scenes/productos"
 import Agregar from "scenes/agregar";
+import Login from "scenes/login"
 
 function App() {
   const mode = useSelector((state)=> state.global.mode);
@@ -20,11 +21,12 @@ function App() {
           <CssBaseline/>
           <Routes>
             <Route element={<Layout/>}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />}></Route>
+              <Route path="/" element={<Navigate to="/login" replace />}></Route>
               <Route path="/dashboard" element={<Dashboard/>}></Route>
               <Route path="/productos" element={<Productos/>}></Route>
               <Route path="/agregar" element={<Agregar/>}></Route>
             </Route>
+            <Route path="/login" element={<Login/>}></Route>
           </Routes> 
         </ThemeProvider>
       </BrowserRouter>
