@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from "axios";
 import Header from "components/Header";
 import Inputs from "components/Inputs";
 import InputList from "components/InputList";
@@ -17,16 +17,14 @@ import {
   InputLabel,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Swal from "sweetalert2";
 
 const Agregar = () => {
-
-
-  //COLORES
+  // COLORES
   const theme = useTheme();
 
   // ADAPTART PANTALLA
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
 
   // Funcion para subir imagenes
   const [selectedImage, setSelectedImage] = useState(null);
@@ -38,16 +36,18 @@ const Agregar = () => {
     reader.onload = () => {
       setSelectedImage(reader.result);
     };
-  }
+  };
 
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
 
   const handleCategoriaChange = (event) => {
     const categoriaSeleccionada = event.target.value;
     setCategoriaSeleccionada(categoriaSeleccionada);
-    setFormData({ ...formData, categoria: { value: categoriaSeleccionada, error: false, helperText: "" } });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      categoria: { value: categoriaSeleccionada, isValid: false },
+    }));
   };
-
 
   //inputs
   const [formData, setFormData] = useState({
@@ -55,10 +55,9 @@ const Agregar = () => {
     precio: { value: "", isValid: false },
     marca: { value: "", isValid: false },
     stock: { value: "", isValid: false },
-    imagen: { value: selectedImage, isValid: false },
-    categoria: { value: categoriaSeleccionada, isValid: false },
+    imagen: { value: null, isValid: false },
+    categoria: { value: "", isValid: false },
     subcategoria: { value: "", isValid: false },
-
   });
 
   //Expresiones de validacion
@@ -79,10 +78,10 @@ const Agregar = () => {
         [name]: { value, isValid },
       }));
     } else {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: { value, isValid: value !== '' },
-          }));
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: { value, isValid: value !== "" },
+      }));
     }
   };
 
@@ -93,7 +92,6 @@ const Agregar = () => {
     if (isFormValid) {
       // Realizar acciones con los datos del formulario si es válido
       console.log("Formulario válido", formData);
-
     } else {
       // Mostrar mensajes de error o tomar otras acciones si es inválido
       console.log("Formulario inválido");
@@ -109,24 +107,32 @@ const Agregar = () => {
   postData.append("subcategoria", formData.subcategoria.value);
 
   //METODO PARA INGRESAR DATOS
-  
+
   const handlePost = async (event) => {
     event.preventDefault();
     try {
-
-      const res = await axios.post('http://localhost:3001/api/create', postData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }})
+      const res = await axios.post(
+        "http://localhost:3001/api/productos/create",
+        postData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(res.data);
+      Swal.fire({
+        title: "Producto Agregado",
+        text: "El producto fue agregado de forma correcta",
+        icon: "success",
+      });
+      setTimeout(() => {
         window.location.reload();
-      console.log(res.data)
+      }, 2000);
     } catch (e) {
-      alert(e)
+      alert(e);
     }
-
   };
-
-
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -198,11 +204,11 @@ const Agregar = () => {
               )}
             </CardContent>
 
-             {/* STOCK */}
-             <CardContent>
+            {/* STOCK */}
+            <CardContent>
               <Box display="flex" alignItems="center">
                 <Typography variant="h5" component={"div"} marginRight={"21px"}>
-                  Precio:
+                  Stock:
                 </Typography>
                 <TextField
                   color="success"
@@ -233,8 +239,7 @@ const Agregar = () => {
                   onChange={handleImageChange}
                 ></input>
               </Box>
-              <img src={selectedImage} width={100} height={100}/>
-
+              <img src={selectedImage} width={100} height={100} />
             </CardContent>
           </Card>
 
@@ -281,12 +286,12 @@ const Agregar = () => {
                   <Select
                     name="categoria"
                     value={formData.categoria.value}
-                    onChange={handleChange}
+                    onChange={handleCategoriaChange}
                     label="Categoría"
                   >
-                    <MenuItem value="guitarra">Guitarra</MenuItem>
-                    <MenuItem value="pianos">Pianos</MenuItem>
-                    <MenuItem value="sintetisadores">Sintetisadores</MenuItem>
+                    <MenuItem value="Guitarra">Guitarra</MenuItem>
+                    <MenuItem value="Pianos">Pianos</MenuItem>
+                    <MenuItem value="Bajos">Bajos</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
@@ -298,16 +303,16 @@ const Agregar = () => {
                   Sub Categoria:
                 </Typography>
                 <FormControl fullWidth variant="outlined">
-                  <InputLabel>Categoría</InputLabel>
+                  <InputLabel>SubCategoría</InputLabel>
                   <Select
                     name="subcategoria"
                     value={formData.subcategoria.value}
                     onChange={handleChange}
                     label="SubCategoría"
                   >
-                    <MenuItem value="guitarra">Guitarra</MenuItem>
-                    <MenuItem value="pianos">Pianos</MenuItem>
-                    <MenuItem value="sintetisadores">Sintetisadores</MenuItem>
+                    <MenuItem value="Guitarras Cuerpo Solido">Guitarras Cuerpo Solido</MenuItem>
+                    <MenuItem value="Piano de media cola">Piano de media cola</MenuItem>
+                    <MenuItem value="Bajos Cuatro Cuerdas">Bajos Cuatro Cuerdas</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
