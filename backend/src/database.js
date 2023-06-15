@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const URI = 'mongodb+srv://Admin:20930879@cluster0.wmlofsu.mongodb.net/?retryWrites=true&w=majority'
+const URI = 'mongodb+srv://Admin:209308798@cluster0.wmlofsu.mongodb.net/?retryWrites=true&w=majority'
 
 mongoose.set("strictQuery", false);
 

@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('./validate-token');
 
 const Task = require('../models/task');
 
@@ -57,10 +58,12 @@ const Task = require('../models/task');
  *         img: base64
  */
 
-router.get('/productos', async (req, res) => {
+router.get('/productos', verifyToken, async (req, res) => {
     const tasks = await Task.find();
     res.json(tasks)
 });
+
+
 
 //ESTO ES SOLO UN EJEMPLO EN COMO ESTA ORGANIZADA LA QUERY
 
@@ -213,28 +216,30 @@ router.get('/productos', async (req, res) => {
 
 
 
-router.get('/productos/:id', async (req, res) => {
+router.get('/productos/:id', verifyToken, async (req, res) => {
     const tasks = await Task.findById(req.params.id);
     res.json(tasks);
 });
 
-router.post('/productos/create', async (req, res) => {
+router.post('/productos/create', verifyToken, async (req, res) => {
     const { nombre, precio, marca, stock, imagen, categoria, subcategoria } = req.body;
     const task = new Task({ nombre , precio, marca, stock, imagen, categoria, subcategoria });
     await task.save();
     res.json(' Producto creado correctamente');
 });
 
-router.put('/productos/:id', async (req, res) =>{
+router.put('/productos/:id', verifyToken, async (req, res) =>{
     const { nombre, precio, marca, stock, imagen, categoria, subcategoria } = req.body;
     const newTask = { nombre , precio, marca, stock, imagen, categoria, subcategoria };
     await Task.findByIdAndUpdate(req.params.id, newTask);
     res.json('Producto actualizado correctamente')
 });
 
-router.delete('/productos/:id', async (req, res) =>{
+router.delete('/productos/:id',verifyToken, async (req, res) =>{
     await Task.findByIdAndRemove(req.params.id);
     res.json('Producto eliminado correctamente')
 });
+
+
 
 module.exports = router;
