@@ -5,6 +5,12 @@ const path = require('path');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
+require('dotenv').config()
+// import routes
+const verifyToken = require('./routes/validate-token');
+
+
+
 
 const swaggerUI = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
@@ -35,12 +41,14 @@ app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:500
 app.use(bodyParser.text({ limit: '200mb' }));
 app.use(cors());
 
+
 //SWAGGER API
 app.use('/api-doc',swaggerUI.serve,swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 
 
 //Routes
-app.use('/api' ,require('./routes/task.routes'));
+app.use('/api' ,verifyToken ,require('./routes/task.routes'));
+app.use('/user',require('./routes/auth'));
 
 //static files 
 app.use(express.static(path.join('.', 'public')));

@@ -1,21 +1,22 @@
-import { Schema, model } from "mongoose";
+const mongoose = require('mongoose');
 
-const userSchema = new Schema({
-    username:{
+
+const userSchema = mongoose.Schema({
+    username: {
         type: String,
-        unique: true
+        required: true,
+        min: 6,
+        max: 255
     },
-    password:{
+    password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 6
     },
-    roles:[{
-        ref: "Role",
-        type: Schema.Types.ObjectId //QUIERO OBTENER EL ID DEL USUARIO, NO SU ROL 
-    }]
-},{
-    timestamps: true,
-    versionKey: false
+    date: {
+        type: Date,
+        default: Date.now
+    }
 })
 
-export default userSchema
+module.exports = mongoose.model('Users', userSchema);

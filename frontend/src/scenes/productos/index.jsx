@@ -16,7 +16,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-//metodo para consultar los productos en la base de datos
+// Método para consultar los productos en la base de datos
 const Productos = () => {
   const style = {
     position: "absolute",
@@ -39,40 +39,55 @@ const Productos = () => {
     fetchProducts();
   }, []);
   const fetchProducts = () => {
+
+    const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+
     axios
-      .get("http://localhost:3001/api/productos") //api de la base de datos
-      .then((res) => {
-        setProducts(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    .get("http://localhost:3001/api/productos", {
+      headers: {
+        "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
+      },
+    })
+    .then((res) => {
+      setProducts(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
   };
 
-  //$Metodo para eliminar productos por ID
-
+  // Método para eliminar productos por ID
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3001/api/productos/${id}`).then(() => {
-      setProducts(products.filter((products) => products.id !== id));
+    const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+
+    axios.delete(`http://localhost:3001/api/productos/${id}`, {
+      headers: {
+        "auth-token": token,
+      },
+    }).then(() => {
+      setProducts(products.filter((product) => product._id !== id));
       window.location.reload();
     });
   };
 
-  //$metodo para actualizar producto
+  // Método para actualizar producto
   const [editedProduct, setEditedProduct] = useState(null);
 
-  const handleOpen = (producto) => {
-    setEditedProduct(producto);
+  const handleOpen = (product) => {
+    setEditedProduct(product);
     setOpen(true);
   };
 
   const handleClose = () => {
     setEditedProduct(null);
-    setOpen(false); // cerrar modal
+    setOpen(false);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+
     axios
       .put(`http://localhost:3001/api/productos/${editedProduct._id}`, {
         nombre: editedProduct.nombre,
@@ -82,6 +97,10 @@ const Productos = () => {
         imagen: editedProduct.imagen,
         categoria: editedProduct.categoria,
         subcategoria: editedProduct.subcategoria,
+      }, {
+        headers: {
+          "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
+        },
       })
       .then((response) => {
         console.log(response);
@@ -95,38 +114,35 @@ const Productos = () => {
 
   function confirmDelete(id) {
     Swal.fire({
-      title: '¿Estás seguro de eliminar este elemento?',
-      icon: 'warning',
+      title: "¿Estás seguro de eliminar este elemento?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Lógica para eliminar el elemento
         handleDelete(id);
       }
     });
   }
 
   return (
-    <Box m="1.5rem 2.5rem" isNonMobile>
+    <Box m="1.5rem 2.5rem" sx={{ isnonmobile: isNonMobile.toString() }}>
       <Header titulo={"Productos"}></Header>
       <Box
         mt="20px"
-        display={"grid"}
-        gridTemplateColumns={"repeat(4, minmax(0, 1fr))"}
-        justifyContent={"space-between"}
-        rowGap={"20px"}
-        columnGap={"1.33%"}
+        display="grid"
+        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+        justifyContent="space-between"
+        rowGap="20px"
+        columnGap="1.33%"
         sx={{
           "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
         }}
       >
-        {/* CONTAINER */}
-
-        {products.map((producto, index) => (
+        {products.map((product, index) => (
           <Card
             key={index}
             sx={{
@@ -140,53 +156,45 @@ const Productos = () => {
                 color={theme.palette.secondary[700]}
                 gutterBottom
               >
-                {producto.categoria}
+                {product.categoria}
               </Typography>
-              <Typography variant="h5" component={"div"}>
-                {producto.nombre}
+              <Typography variant="h5" component="div">
+                {product.nombre}
               </Typography>
               <Typography
                 sx={{ mb: "1.5rem" }}
                 color={theme.palette.secondary[400]}
               >
-                ${producto.precio}
+                ${product.precio}
               </Typography>
-              <Box maxWidth={"200px"} margin={"0 auto"}>
+              <Box maxWidth="200px" margin="0 auto">
                 <img
-                  src={producto.imagen}
-                  width={"200px"}
+                  src={product.imagen}
+                  width="200px"
                   style={{
-                    maxWidth: isNonMobile ? "200px" : "100%", // Utiliza maxWidth y height para asegurarte de que la imagen no se estire en dispositivos móviles
+                    maxWidth: isNonMobile ? "200px" : "100%",
                     height: "200px",
                     width: "200px",
                     objectFit: "cover",
                     borderRadius: "10px",
                     marginBottom: "1rem",
                   }}
-                ></img>
+                  alt="Product"
+                />
               </Box>
-              <Box display={"flex"} justifyContent={"space-between"}>
+              <Box display="flex" justifyContent="space-between">
                 <Button
                   variant="contained"
-                  onClick={() => handleOpen(producto)}
+                  onClick={() => handleOpen(product)}
                   color="success"
                 >
                   Editar
                 </Button>
 
-                {/* <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => Swal.fire}
-                  sx={{ width: "87.75px" }}
-                >
-                  Eliminar
-                </Button> */}
-
                 <Button
                   variant="contained"
                   color="error"
-                  onClick={() => confirmDelete(producto._id)}
+                  onClick={() => confirmDelete(product._id)}
                   sx={{ width: "87.75px" }}
                 >
                   Eliminar
@@ -200,7 +208,6 @@ const Productos = () => {
               >
                 <Box sx={style}>
                   <form onSubmit={handleSubmit}>
-                    {/* <h3>Formulario</h3> */}
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={6}>
                         <Typography>Nombre:</Typography>
@@ -208,9 +215,7 @@ const Productos = () => {
                           placeholder="nombre"
                           label="Nombre"
                           value={
-                            setEditedProduct.nombre ||
-                            (editedProduct && editedProduct.nombre) ||
-                            ""
+                            editedProduct?.nombre || ""
                           }
                           onChange={(e) =>
                             setEditedProduct({
@@ -229,9 +234,7 @@ const Productos = () => {
                           placeholder="precio"
                           label="precio"
                           value={
-                            setEditedProduct.precio ||
-                            (editedProduct && editedProduct.precio) ||
-                            ""
+                            editedProduct?.precio || ""
                           }
                           onChange={(e) =>
                             setEditedProduct({
@@ -250,9 +253,7 @@ const Productos = () => {
                           placeholder="0"
                           label="stock"
                           value={
-                            setEditedProduct.stock ||
-                            (editedProduct && editedProduct.stock) ||
-                            ""
+                            editedProduct?.stock || ""
                           }
                           onChange={(e) =>
                             setEditedProduct({
@@ -289,9 +290,7 @@ const Productos = () => {
                           placeholder="Categoría"
                           label="categoria"
                           value={
-                            setEditedProduct.categoria ||
-                            (editedProduct && editedProduct.categoria) ||
-                            ""
+                            editedProduct?.categoria || ""
                           }
                           onChange={(e) =>
                             setEditedProduct({
@@ -303,15 +302,13 @@ const Productos = () => {
                           fullWidth
                         />
                       </Grid>
-                      <Grid item xs={12} md={6} marginBottom={"6rem"}>
+                      <Grid item xs={12} md={6} marginBottom="6rem">
                         <Typography>SubCategoría:</Typography>
                         <TextField
                           placeholder="Subcategoría"
                           label="subcategoria"
                           value={
-                            setEditedProduct.subcategoria ||
-                            (editedProduct && editedProduct.subcategoria) ||
-                            ""
+                            editedProduct?.subcategoria || ""
                           }
                           onChange={(e) =>
                             setEditedProduct({

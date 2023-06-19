@@ -20,7 +20,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Swal from "sweetalert2";
 
 const Agregar = () => {
-  //COLORES
+  // COLORES
   const theme = useTheme();
 
   // ADAPTART PANTALLA
@@ -43,10 +43,10 @@ const Agregar = () => {
   const handleCategoriaChange = (event) => {
     const categoriaSeleccionada = event.target.value;
     setCategoriaSeleccionada(categoriaSeleccionada);
-    setFormData({
-      ...formData,
-      categoria: { value: categoriaSeleccionada, error: false, helperText: "" },
-    });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      categoria: { value: categoriaSeleccionada, isValid: false },
+    }));
   };
 
   //inputs
@@ -55,8 +55,8 @@ const Agregar = () => {
     precio: { value: "", isValid: false },
     marca: { value: "", isValid: false },
     stock: { value: "", isValid: false },
-    imagen: { value: selectedImage, isValid: false },
-    categoria: { value: categoriaSeleccionada, isValid: false },
+    imagen: { value: null, isValid: false },
+    categoria: { value: "", isValid: false },
     subcategoria: { value: "", isValid: false },
   });
 
@@ -110,6 +110,8 @@ const Agregar = () => {
 
   const handlePost = async (event) => {
     event.preventDefault();
+    const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+
     try {
       const res = await axios.post(
         "http://localhost:3001/api/productos/create",
@@ -117,13 +119,17 @@ const Agregar = () => {
         {
           headers: {
             "Content-Type": "application/json",
+            "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
+
           },
         }
       );
       console.log(res.data);
-      Swal.fire( "Producto Agregado", //Texto de la alerta
-      'El producto fue agregado de forma correcta',
-      'success');
+      Swal.fire({
+        title: "Producto Agregado",
+        text: "El producto fue agregado de forma correcta",
+        icon: "success",
+      });
       setTimeout(() => {
         window.location.reload();
       }, 2000);
@@ -284,7 +290,7 @@ const Agregar = () => {
                   <Select
                     name="categoria"
                     value={formData.categoria.value}
-                    onChange={handleChange}
+                    onChange={handleCategoriaChange}
                     label="Categoría"
                   >
                     <MenuItem value="Guitarra">Guitarra</MenuItem>
@@ -301,7 +307,7 @@ const Agregar = () => {
                   Sub Categoria:
                 </Typography>
                 <FormControl fullWidth variant="outlined">
-                  <InputLabel>Categoría</InputLabel>
+                  <InputLabel>SubCategoría</InputLabel>
                   <Select
                     name="subcategoria"
                     value={formData.subcategoria.value}

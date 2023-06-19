@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
   useTheme,
+  Button,
 } from "@mui/material";
 import {
   SettingsOutlined,
@@ -18,7 +19,7 @@ import {
   ChevronRightOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
-  Groups2Outlined,
+  GroupsOutlined,
   ReceiptLongOutlined,
   PublicOutlined,
   PointOfSaleOutlined,
@@ -27,12 +28,11 @@ import {
   AdminPanelSettingsOutlined,
   TrendingUpOutlined,
   PieChartOutlined,
-  AddCircleOutlineOutlined
+  AddCircleOutlineOutlined,
+  LogoutOutlined,
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
-
 
 const navItems = [
   {
@@ -49,7 +49,7 @@ const navItems = [
   },
   {
     text: "Agregar",
-    icon: <AddCircleOutlineOutlined/>,
+    icon: <AddCircleOutlineOutlined />,
   },
   {
     text: "Ventas",
@@ -80,6 +80,12 @@ const Sidebar = ({
     setActive(pathname.substring(1));
   }, [pathname]);
 
+  const handleLogout = () => {
+    // Eliminar el token de autenticación del almacenamiento local
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <Box component="nav">
       {isSidebarOpen && (
@@ -93,7 +99,7 @@ const Sidebar = ({
             "& .MuiDrawer-paper": {
               color: theme.palette.secondary[200],
               backgroundColor: theme.palette.background.alt,
-              boxSixing: "border-box",
+              boxSizing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
               width: drawerWidth,
             },
@@ -163,6 +169,16 @@ const Sidebar = ({
                 );
               })}
             </List>
+            <Box sx={{ p: 2 }}>
+              <Button
+                variant="contained"
+                startIcon={<LogoutOutlined />}
+                onClick={handleLogout}
+                fullWidth
+              >
+                Cerrar sesión
+              </Button>
+            </Box>
           </Box>
         </Drawer>
       )}
