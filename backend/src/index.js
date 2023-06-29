@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config()
 // import routes
 const verifyToken = require('./routes/validate-token');
-
+const solicitudRouter = require('./routes/solicitud');
 
 
 
@@ -49,6 +49,8 @@ app.use('/api-doc',swaggerUI.serve,swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 //Routes
 app.use('/api' ,verifyToken ,require('./routes/task.routes'));
 app.use('/user',require('./routes/auth'));
+app.use('/api/solicitud',verifyToken, solicitudRouter);
+
 
 //static files 
 app.use(express.static(path.join('.', 'public')));
