@@ -38,6 +38,8 @@ const Productos = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  //METODO LISTAR
   const fetchProducts = () => {
 
     const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
@@ -84,6 +86,7 @@ const Productos = () => {
     setOpen(false);
   };
 
+  //METODO AGREGAR PRODUCTOS
   const handleSubmit = (event) => {
     event.preventDefault();
     const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
@@ -182,6 +185,8 @@ const Productos = () => {
                   alt="Product"
                 />
               </Box>
+
+              {/* BOTONES PARA MODAL */}
               <Box display="flex" justifyContent="space-between">
                 <Button
                   variant="contained"
@@ -200,6 +205,8 @@ const Productos = () => {
                   Eliminar
                 </Button>
               </Box>
+              
+              {/* MODAL */}
               <Modal
                 open={open}
                 onClose={handleClose}

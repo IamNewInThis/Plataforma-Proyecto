@@ -9,6 +9,7 @@ import Layout from "scenes/layout"
 import Productos from "scenes/productos"
 import Agregar from "scenes/agregar";
 import Login from "scenes/login"
+import Solicitudes from "scenes/solicitudes"
 
 function App() {
   const mode = useSelector((state)=> state.global.mode);
@@ -25,6 +26,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard/>}></Route>
               <Route path="/productos" element={<Productos/>}></Route>
               <Route path="/agregar" element={<Agregar/>}></Route>
+              <Route path="/solicitudes" element={<Solicitudes/>}></Route>
             </Route>
             <Route path="/login" element={<Login/>}></Route>
           </Routes> 

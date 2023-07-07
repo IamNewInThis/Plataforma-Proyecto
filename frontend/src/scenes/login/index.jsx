@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from "sweetalert2";
 
-
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -34,13 +33,11 @@ const Login = () => {
       })
       .catch((error) => {
         console.log('Error de inicio de sesión:', error);
-
         Swal.fire({
           icon: 'error',
           title: 'Error de inicio de sesión',
           text: "Credenciales Erroneas",
         });
-
       });
   };
 

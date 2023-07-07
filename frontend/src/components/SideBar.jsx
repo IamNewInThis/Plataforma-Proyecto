@@ -56,7 +56,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "Overview",
+    text: "Solicitudes",
     icon: <PointOfSaleOutlined />,
   },
   {
