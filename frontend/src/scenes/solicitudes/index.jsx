@@ -8,6 +8,8 @@ import {
   useTheme,
   Modal,
   Grid,
+  TextField,
+  Alert
 } from "@mui/material";
 
 import Header from "components/Header";
@@ -21,7 +23,7 @@ const Solicitudes = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "50%", // Cambiar el ancho del modal
-    maxHeight: "50%", // Cambiar la altura máxima del modal
+    maxHeight: "60%", // Cambiar la altura máxima del modal
     bgcolor: "background.paper",
     border: "2px solid #fff",
     boxShadow: 24,
@@ -75,33 +77,7 @@ const Solicitudes = () => {
 
 
 
-  const json = {
-    boletas: [
-      {
-        fechaBoleta: "2023-06-29",
-        idBoleta: "5xPB1NFs",
-        productos: "\n        lojlk - Cantidad: 1\n    ",
-        sucursal: "Sucursal A",
-        total: "56.00",
-      },
-      {
-        fechaBoleta: "2023-07-06",
-        idBoleta: "Sd5DlfPw",
-        productos:
-          "\n        Guitarra eléctrica LXMT 130 - Cantidad: 1\n    \n        Teclado & Sintezador Vocal CT-S1000VC2 - Cantidad: 1\n    ",
-        sucursal: "Sucursal B",
-        total: "689800.00",
-      },
-      {
-        fechaBoleta: "2023-07-06",
-        idBoleta: "6fvGx3W1",
-        productos:
-          "\n        Teclado & Sintezador Vocal CT-S1000VC2 - Cantidad: 1\n    \n        lojlk - Cantidad: 1\n    \n        Guitarra eléctrica LXMT 130 - Cantidad: 1\n    ",
-        sucursal: "Sucursal C",
-        total: "689856.00",
-      },
-    ],
-  };
+
   const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
 
 
@@ -109,16 +85,18 @@ const Solicitudes = () => {
 
   useEffect(() => {
     axios
-      .get("http://25.64.187.92:5000/api/productos/listarBodega", {
+      .get("http://localhost:3001/api/solicitud", {
         headers: {
           "Content-Type": "application/json",
+          "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
         },
       })
       .then((response) => {
         const jsone = response.data; // Guardar la respuesta en una variable
+        console.log("estoy adentro", jsone[0].boletas);
 
 
-        const generatedSolicitudes = generarSolicitud(jsone.boletas);
+        const generatedSolicitudes = generarSolicitud(jsone[0].boletas);
         setBoletas(generatedSolicitudes);
       })
       .catch((error) => {
@@ -127,26 +105,64 @@ const Solicitudes = () => {
   }, [token]);
 
 
+  //VALIDACIONES
+
+  const [showAlert, setShowAlert] = useState(false);
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
+  //inputs
+  const [formData, setFormData] = useState({
+    nombre: { value: '' },
+    direccion: { value: '' },
+    nombreDestino: { value: '' },
+  });
+
+  //inputs
+  const handleInputChange = (event, fieldName) => {
+    const value = event.target.value;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: {
+        value: value,
+      },
+    }));
+  };
+
+
+
   const [modalBoleta, setModalBoleta] = useState(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // Validación de campos vacíos
+    if (!formData.nombre.value || !formData.direccion.value || !formData.nombreDestino.value) {
+      setShowAlert(true);
+      return;
+    }
+    // Limpiar los productod para posteriormente enviarlo en comentario
+    const comentario = modalBoleta.productos
+      .map((producto) => `producto: ${producto.nombre} cantidad: ${producto.cantidad}`)
+      .join("\n");
     // Preparar los datos para enviar a la API
     const data = {
-      fecha: modalBoleta.fechaBoleta,
-      idBoleta: modalBoleta.idBoleta,
-      sucursal: modalBoleta.sucursal,
-      productos: modalBoleta.productos,
+      nombre_origen: formData.nombre.value,
+      direccion_origen: modalBoleta.sucursal,
+      direccion_destino: formData.direccion.value,
+      nombre_destino: formData.nombreDestino.value,
+      comentario: comentario,
+      info: "cyberEdge",
+
     };
+
     const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
-  
+
     // Hacer la solicitud HTTP a la API para enviar los detalles
-    axios.post("URL_DE_LA_API", data)
+    axios.post("https://musicpro.bemtorres.win/api/v1/transporte/solicitud", data)
       .then((response) => {
         // Manejar la respuesta de la API
         console.log("solicitud enviada correctamente");
@@ -156,12 +172,12 @@ const Solicitudes = () => {
         // Manejar los errores de la solicitud HTTP
         console.error(error);
       });
-  
+
     // Actualizar el stock de cada producto
     for (let i = 0; i < modalBoleta.productos.length; i++) {
       const nombreProducto = modalBoleta.productos[i].nombre;
       const cantidadRestar = modalBoleta.productos[i].cantidad;
-  
+
       actualizarStockProductoPorNombre(nombreProducto, cantidadRestar, token)
         .then((data) => {
           console.log("Stock actualizado:", data);
@@ -172,11 +188,11 @@ const Solicitudes = () => {
           // Manejar el error de manera adecuada
         });
     }
-  
+
     handleClose();
-//  window.location.reload();
+    //  window.location.reload();
   };
-  
+
 
   const actualizarStockProductoPorNombre = async (nombreProducto, cantidadRestar, token) => {
     try {
@@ -300,7 +316,11 @@ const Solicitudes = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={style}>{showAlert && (
+          <Alert severity="error" onClose={() => setShowAlert(false)}>
+            Todos los campos son requeridos
+          </Alert>
+        )}
           {modalBoleta && (
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
@@ -325,7 +345,7 @@ const Solicitudes = () => {
                 ))}
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} marginTop={"1rem"}>
                 <Typography>
                   <span style={{ color: theme.palette.secondary[400] }}>
                     Fecha Compra:
@@ -333,8 +353,63 @@ const Solicitudes = () => {
                   {modalBoleta.fechaBoleta}
                 </Typography>
               </Grid>
+              <Grid item xs={12} md={6} marginTop={"1rem"}>
+                <Box display="flex"  alignItems="center">
+                  <Typography variant="h6">
+                    <span style={{ color: theme.palette.secondary[400] }}>
+                      Nombre:
+                    </span>{" "}
+                  </Typography>
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    placeholder="Nombre"
+                    value={formData.nombre.value}
+                    onChange={(e) => handleInputChange(e, "nombre")}
+                    type="text"
+                    sx={{ marginLeft: "1rem" }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6} marginTop={"1rem"}>
+                <Box display="flex"  alignItems="center" >
+                  <Typography variant="h6" >
+                    <span style={{ color: theme.palette.secondary[400] }}>
+                      Dirección:
+                    </span>{" "}
+                  </Typography>
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    placeholder="Dirección"
+                    value={formData.direccion.value}
+                    onChange={(e) => handleInputChange(e, "direccion")}
+                    sx={{ marginLeft: "1rem" }}
+                    type="text"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6} marginTop={"1rem"}>
 
-              <Grid item xs={12}>
+                <Box display="flex" alignItems="center" >
+                  <Typography variant="h6">
+                    <span style={{ color: theme.palette.secondary[400] }}>
+                      Nombre destino:
+                    </span>{" "}
+                  </Typography>
+                  <TextField
+                    variant="outlined"
+                    fullWidth
+                    placeholder="Nombre Destino"
+                    value={formData.nombreDestino.value}
+                    type="text"
+                    onChange={(e) => handleInputChange(e, "nombreDestino")}
+                    sx={{   width: "100%" }}
+
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} >
                 <Box sx={{ marginTop: "2rem" }}>
                   <Card sx={{ borderRadius: "0.55rem" }}>
                     <CardContent>
@@ -375,4 +450,3 @@ const Solicitudes = () => {
 };
 
 export default Solicitudes;
-
