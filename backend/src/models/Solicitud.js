@@ -1,32 +1,26 @@
 const mongoose = require('mongoose');
 
-const solicitudSchema = mongoose.Schema({
-  fechaBoleta: {
-  type: String, 
-  required: true
-},
-  idBoleta: {
-    type: String,
-    required: true
-  },
-  sucursal: {
-    type: String,
-    required: true,
-    min: 6,
-    max: 255
-  },
-  productos: [{
-    nombre: {
+const solicitudSchema = new mongoose.Schema({
+  boletas: [{
+    fechaBoleta: {
       type: String,
-      required: true,
-      minlength: 6
+      required: true
     },
-    cantidad: {
-      type: Number,
-      required: true,
-      min: 1
+    idBoleta: {
+      type: String,
+      required: true
+    },
+    productos: {
+      type: String,
+      required: true
+    },
+    sucursal: {
+      type: String,
+      required: true
     }
   }]
 });
 
-module.exports = mongoose.model('Solicitudes', solicitudSchema);
+const Solicitudes = mongoose.model('Solicitudes', solicitudSchema);
+
+module.exports = Solicitudes;

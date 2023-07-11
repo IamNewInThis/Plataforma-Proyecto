@@ -15,16 +15,17 @@ router.get('/', verifyToken, async (req, res) => {
 
 // Crear una nueva solicitud de producto
 router.post('/create', verifyToken, async (req, res) => {
-  const { sucursal, productos } = req.body;
+  const solicitudData = req.body;
 
   try {
-    const solicitud = new Solicitud({ sucursal, productos });
+    const solicitud = new Solicitud(solicitudData);
     await solicitud.save();
     res.json({ message: 'Solicitud creada correctamente' });
   } catch (error) {
     res.status(500).json({ error: 'Error al crear la solicitud' });
   }
 });
+
 
 // Obtener una solicitud de producto por su ID
 router.get('/:id', verifyToken, async (req, res) => {

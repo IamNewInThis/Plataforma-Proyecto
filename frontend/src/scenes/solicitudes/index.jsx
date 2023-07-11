@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -102,24 +102,35 @@ const Solicitudes = () => {
       },
     ],
   };
+  const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
 
-  axios.get("http://25.64.187.92:5000/api/productos/listarBodega")
-  .then((response) => {
-    const jsone = response.data; // Guardar la respuesta en una variable
-    console.log(jsone); 
 
-    // Utilizamos la respuesta en el useState
-    const [boletas, setBoletas] = useState(() => generarSolicitud(jsone));
-  })
-  .catch((error) => {
-    console.error(error); // Manejar los errores de la consulta
-  });
+  const [boletas, setBoletas] = useState([]); // Estado inicial vacío
+
+  useEffect(() => {
+    axios
+      .get("http://25.64.187.92:5000/api/productos/listarBodega", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        const jsone = response.data; // Guardar la respuesta en una variable
+
+
+        const generatedSolicitudes = generarSolicitud(jsone.boletas);
+        setBoletas(generatedSolicitudes);
+      })
+      .catch((error) => {
+        console.error(error); // Manejar los errores de la consulta
+      });
+  }, [token]);
+
 
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
 
   const [modalBoleta, setModalBoleta] = useState(null);
 
