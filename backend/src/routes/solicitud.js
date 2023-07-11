@@ -14,7 +14,7 @@ router.get('/', verifyToken, async (req, res) => {
 });
 
 // Crear una nueva solicitud de producto
-router.post('/', verifyToken, async (req, res) => {
+router.post('/create', verifyToken, async (req, res) => {
   const { sucursal, productos } = req.body;
 
   try {

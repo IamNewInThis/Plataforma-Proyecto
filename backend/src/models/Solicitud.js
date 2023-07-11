@@ -7,6 +7,10 @@ const solicitudSchema = mongoose.Schema({
     min: 6,
     max: 255
   },
+  idBoleta: {
+    type: String,
+    required: true
+  },
   productos: [{
     nombre: {
       type: String,

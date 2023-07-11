@@ -221,6 +221,23 @@ router.get('/productos/:id', verifyToken, async (req, res) => {
     res.json(tasks);
 });
 
+router.get('/productos/nombre/:nombre', verifyToken, async (req, res) => {
+    try {
+      const nombreProducto = req.params.nombre;
+      const producto = await Task.findOne({ nombre: nombreProducto });
+  
+      if (producto) {
+        res.json(producto);
+      } else {
+        res.status(404).json({ message: 'Producto no encontrado' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error en el servidor' });
+    }
+  });
+  
+
 router.post('/productos/create', verifyToken, async (req, res) => {
     const { nombre, precio, marca, stock, imagen, categoria, subcategoria } = req.body;
     const task = new Task({ nombre , precio, marca, stock, imagen, categoria, subcategoria });
@@ -239,6 +256,7 @@ router.delete('/productos/:id',verifyToken, async (req, res) =>{
     await Task.findByIdAndRemove(req.params.id);
     res.json('Producto eliminado correctamente')
 });
+
 
 
 

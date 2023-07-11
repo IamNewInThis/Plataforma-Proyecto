@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -7,16 +7,13 @@ import {
   Typography,
   useTheme,
   Modal,
-  TextField,
   Grid,
 } from "@mui/material";
 
 import Header from "components/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
-import Swal from "sweetalert2";
 
-// Método para consultar los productos en la base de datos
 const Solicitudes = () => {
   const style = {
     position: "absolute",
@@ -31,62 +28,196 @@ const Solicitudes = () => {
     p: 4,
   };
 
-  const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [boletas, setBoletas] = useState([]);
+  function generarSolicitud(boletas) {
+    const solicitudes = []; // arreglo vacío para almacenar las solicitudes
 
-  useEffect(() => {
-    fetchBolestas();
-  }, []);
+    // Recorrer las boletas
+    for (let i = 0; i < boletas.length; i++) {
+      const boleta = boletas[i];
 
-  // METODO LISTAR
-  const fetchBolestas = () => {
-    axios
-      .get("http://25.64.187.92:5000/api/productos/listarBodega", {})
-      .then((res) => {
-        setBoletas(res.data.boletas);
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+      // Extraer los datos de la boleta
+      const sucursal = boleta.sucursal;
+      const idBoleta = boleta.idBoleta;
+      const fechaBoleta = boleta.fechaBoleta;
+      const productosString = boleta.productos;
+
+      // Crear un objeto de solicitud
+      const solicitud = {
+        sucursal: sucursal,
+        idBoleta: idBoleta,
+        fechaBoleta: fechaBoleta,
+        productos: []
+      };
+
+      // Dividir la cadena de productos y agregarlos al arreglo de productos de la solicitud
+      const productsArray = productosString.split('\n')
+        .map((product) => product.trim())
+        .filter((product) => product !== '');
+
+      for (let j = 0; j < productsArray.length; j++) {
+        const productData = productsArray[j].split('- Cantidad:');
+        const productName = productData[0].trim();
+        const productQuantity = parseInt(productData[1]);
+
+        if (productName && !isNaN(productQuantity)) {
+          solicitud.productos.push({
+            nombre: productName,
+            cantidad: productQuantity
+          });
+        }
+      }
+
+      solicitudes.push(solicitud); // Agregar la solicitud al arreglo de solicitudes
+    }
+
+    return solicitudes; // Retornar el arreglo de solicitudes
+  }
+
+
+
+  const json = {
+    boletas: [
+      {
+        fechaBoleta: "2023-06-29",
+        idBoleta: "5xPB1NFs",
+        productos: "\n        lojlk - Cantidad: 1\n    ",
+        sucursal: "Sucursal A",
+        total: "56.00",
+      },
+      {
+        fechaBoleta: "2023-07-06",
+        idBoleta: "Sd5DlfPw",
+        productos:
+          "\n        Guitarra eléctrica LXMT 130 - Cantidad: 1\n    \n        Teclado & Sintezador Vocal CT-S1000VC2 - Cantidad: 1\n    ",
+        sucursal: "Sucursal B",
+        total: "689800.00",
+      },
+      {
+        fechaBoleta: "2023-07-06",
+        idBoleta: "6fvGx3W1",
+        productos:
+          "\n        Teclado & Sintezador Vocal CT-S1000VC2 - Cantidad: 1\n    \n        lojlk - Cantidad: 1\n    \n        Guitarra eléctrica LXMT 130 - Cantidad: 1\n    ",
+        sucursal: "Sucursal C",
+        total: "689856.00",
+      },
+    ],
   };
 
-    //METODO MODAL PRODUCTOS
-    const [modalBoleta, setModalBoleta] = useState(null);
+  axios.get("http://25.64.187.92:5000/api/productos/listarBodega")
+  .then((response) => {
+    const jsone = response.data; // Guardar la respuesta en una variable
+    console.log(jsone); 
 
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      axios
-        .put(`http://25.64.187.92:5000/api/productos/listarBodega${modalBoleta.idBoleta}`, {
-          productos: modalBoleta.productos,
-          total: modalBoleta.total,
-          fechaBoleta: modalBoleta.fechaBoleta
-        })
-        .then((response) => {
-          console.log(response);
-          handleClose();
-          window.location.reload();
+    // Utilizamos la respuesta en el useState
+    const [boletas, setBoletas] = useState(() => generarSolicitud(jsone));
+  })
+  .catch((error) => {
+    console.error(error); // Manejar los errores de la consulta
+  });
+
+
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
+
+  const [modalBoleta, setModalBoleta] = useState(null);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Preparar los datos para enviar a la API
+    const data = {
+      fecha: modalBoleta.fechaBoleta,
+      idBoleta: modalBoleta.idBoleta,
+      sucursal: modalBoleta.sucursal,
+      productos: modalBoleta.productos,
+    };
+    const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+  
+    // Hacer la solicitud HTTP a la API para enviar los detalles
+    axios.post("URL_DE_LA_API", data)
+      .then((response) => {
+        // Manejar la respuesta de la API
+        console.log(response.data);
+        // Realizar cualquier acción adicional después de enviar los detalles
+      })
+      .catch((error) => {
+        // Manejar los errores de la solicitud HTTP
+        console.error(error);
+      });
+  
+    // Actualizar el stock de cada producto
+    for (let i = 0; i < modalBoleta.productos.length; i++) {
+      const nombreProducto = modalBoleta.productos[i].nombre;
+      const cantidadRestar = modalBoleta.productos[i].cantidad;
+  
+      actualizarStockProductoPorNombre(nombreProducto, cantidadRestar, token)
+        .then((data) => {
+          console.log("Stock actualizado:", data);
+          // Realizar las acciones necesarias después de actualizar el stock
         })
         .catch((error) => {
-          console.log(error);
+          console.error("Error al actualizar el stock:", error);
+          // Manejar el error de manera adecuada
         });
-    };
+    }
+  
+    handleClose();
+//  window.location.reload();
+  };
+  
 
-  const [verProduct, setVerProduct] = useState(null);
-  // Metodo ABRIR modal
+  const actualizarStockProductoPorNombre = async (nombreProducto, cantidadRestar, token) => {
+    try {
+      // Obtener el producto por nombre
+      const response = await axios.get(`http://localhost:3001/api/productos/nombre/${nombreProducto}`, {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
+        },
+      });
+
+      const producto = response.data;
+
+
+      if (producto) {
+        // Restar la cantidad al stock existente
+        const nuevoStock = producto.stock - cantidadRestar;
+
+        // Actualizar el stock del producto
+        await axios.put(
+          `http://localhost:3001/api/productos/${producto._id}`,
+          { stock: nuevoStock },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
+
+            },
+          }
+        );
+
+        return nuevoStock;
+      } else {
+        console.error("No se encontró el producto");
+        return null;
+      }
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+
   const handleOpen = (boleta) => {
     setModalBoleta(boleta);
     setOpen(true);
   };
 
-  // Metodo CERRAR modal
   const handleClose = () => {
-    setVerProduct(null);
+    setModalBoleta(null); // Actualizar el estado a null
     setOpen(false);
   };
-
   return (
     <Box m="1.5rem 2.5rem" sx={{ isnonmobile: isNonMobile.toString() }}>
       <Header titulo={"Solicitudes"}></Header>
@@ -135,79 +266,102 @@ const Solicitudes = () => {
               >
                 {boleta.sucursal}
               </Typography>
+
               <Box display="flex" justifyContent="space-between">
-                <Button variant="contained" color="success" fullWidth onClick={() => handleOpen(boleta)}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  fullWidth
+                  onClick={() => handleOpen(boleta)}
+                >
                   Detalle
                 </Button>
               </Box>
-            
-            {/* MODAL */}
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                      <Typography>
-                        <span style={{ color: theme.palette.secondary[400] }}>Producto: </span>{modalBoleta?.productos}
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <Typography>
-                        <span style={{ color: theme.palette.secondary[400] }}>Total: $</span>{modalBoleta?.total}
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={12} md={6}>
-                      <Typography>
-                        <span style={{ color: theme.palette.secondary[400] }}>Fecha Compra:</span> {modalBoleta?.fechaBoleta}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-
-                  <Box sx={{marginTop: "2rem" , }}> 
-                    <Card
-                      sx={{
-                        borderRadius: "0.55rem"
-                      }}
-                    >
-                      <CardContent>
-                        <Box display="flex" alignItems="center">
-                          <Button
-                            variant="contained"
-                            color="success"
-                            fullWidth
-                            type="submit"
-                          >
-                            Enviar Detalle
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            fullWidth
-                            type="submit"
-                            onClick={handleClose}
-                            sx={{ marginLeft: "10px" }}
-                          >
-                            Cancelar
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Box>
-                </Box>
-              </Modal>
-
             </CardContent>
           </Card>
         ))}
+
       </Box>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          {modalBoleta && (
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                {modalBoleta.productos.map((producto, index) => (
+                  <Typography key={index}>
+                    <span style={{ color: theme.palette.secondary[400] }}>
+                      Producto:
+                    </span>{" "}
+                    {producto.nombre}
+                  </Typography>
+                ))}
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                {modalBoleta.productos.map((producto, index) => (
+                  <Typography key={index}>
+                    <span style={{ color: theme.palette.secondary[400] }}>
+                      Cantidad:
+                    </span>{" "}
+                    {producto.cantidad}
+                  </Typography>
+                ))}
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Typography>
+                  <span style={{ color: theme.palette.secondary[400] }}>
+                    Fecha Compra:
+                  </span>{" "}
+                  {modalBoleta.fechaBoleta}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Box sx={{ marginTop: "2rem" }}>
+                  <Card sx={{ borderRadius: "0.55rem" }}>
+                    <CardContent>
+                      <Box display="flex" alignItems="center">
+                        <Button
+                          variant="contained"
+                          color="success"
+                          fullWidth
+                          type="submit"
+                          onClick={handleSubmit}
+                        >
+                          Enviar Detalle
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          fullWidth
+                          onClick={handleClose}
+                          sx={{ marginLeft: "10px" }}
+                        >
+                          Cancelar
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Box>
+              </Grid>
+            </Grid>
+          )}
+        </Box>
+      </Modal>
+
+
     </Box>
   );
+
+
 };
 
 export default Solicitudes;
+
