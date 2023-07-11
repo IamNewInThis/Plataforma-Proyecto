@@ -8,6 +8,7 @@ import {
   useTheme,
   Modal,
   Grid,
+  TextField
 } from "@mui/material";
 
 import Header from "components/Header";
@@ -21,7 +22,7 @@ const Solicitudes = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "50%", // Cambiar el ancho del modal
-    maxHeight: "50%", // Cambiar la altura máxima del modal
+    maxHeight: "60%", // Cambiar la altura máxima del modal
     bgcolor: "background.paper",
     border: "2px solid #fff",
     boxShadow: 24,
@@ -109,16 +110,18 @@ const Solicitudes = () => {
 
   useEffect(() => {
     axios
-      .get("http://25.64.187.92:5000/api/productos/listarBodega", {
+      .get("http://localhost:3001/api/solicitud", {
         headers: {
           "Content-Type": "application/json",
+          "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
         },
       })
       .then((response) => {
         const jsone = response.data; // Guardar la respuesta en una variable
+        console.log("estoy adentro", jsone[0].boletas);
 
 
-        const generatedSolicitudes = generarSolicitud(jsone.boletas);
+        const generatedSolicitudes = generarSolicitud(jsone[0].boletas);
         setBoletas(generatedSolicitudes);
       })
       .catch((error) => {
@@ -325,7 +328,7 @@ const Solicitudes = () => {
                 ))}
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} marginTop={"1rem"}>
                 <Typography>
                   <span style={{ color: theme.palette.secondary[400] }}>
                     Fecha Compra:
@@ -334,7 +337,46 @@ const Solicitudes = () => {
                 </Typography>
               </Grid>
 
-              <Grid item xs={12}>
+              <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={"1rem"}>
+                <Typography variant="h6" marginLeft={"16px"}>
+                  <span style={{ color: theme.palette.secondary[400] }}>
+                    Nombre:
+                  </span>{" "}
+                </Typography>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  placeholder="Nombre"
+                />
+              </Box>
+
+              <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={"1rem"}>
+                <Typography variant="h6" marginLeft={"16px"}>
+                  <span style={{ color: theme.palette.secondary[400] }}>
+                    Dirección:
+                  </span>{" "}
+                </Typography>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  placeholder="Dirección"
+                />
+              </Box>
+
+              <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={"1rem"}>
+                <Typography variant="h6" marginLeft={"4rem"}>
+                  <span style={{ color: theme.palette.secondary[400] }}>
+                    Nombre destino:
+                  </span>{" "}
+                </Typography>
+                <TextField
+                  variant="outlined"
+                  fullWidth
+                  placeholder="Nombre Destino"
+                />
+              </Box>
+              
+              <Grid item xs={12} >
                 <Box sx={{ marginTop: "2rem" }}>
                   <Card sx={{ borderRadius: "0.55rem" }}>
                     <CardContent>
@@ -375,4 +417,3 @@ const Solicitudes = () => {
 };
 
 export default Solicitudes;
-

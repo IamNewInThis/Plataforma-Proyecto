@@ -10,6 +10,8 @@ import Productos from "scenes/productos"
 import Agregar from "scenes/agregar";
 import Login from "scenes/login"
 import Solicitudes from "scenes/solicitudes"
+import Solicitud from "scenes/solicitudes_bodega";
+import ProductosBodega from "scenes/productos_bodega"
 
 function App() {
   const mode = useSelector((state)=> state.global.mode);
@@ -27,6 +29,8 @@ function App() {
               <Route path="/productos" element={<Productos/>}></Route>
               <Route path="/agregar" element={<Agregar/>}></Route>
               <Route path="/solicitudes" element={<Solicitudes/>}></Route>
+              <Route path="/solicitudes-bodega" element={<Solicitud/>}></Route>
+              <Route path="/productos-bodega" element={<ProductosBodega/>}></Route>
             </Route>
             <Route path="/login" element={<Login/>}></Route>
           </Routes> 
