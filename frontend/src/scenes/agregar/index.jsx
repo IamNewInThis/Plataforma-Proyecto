@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "components/Header";
-import Inputs from "components/Inputs";
-import InputList from "components/InputList";
 import {
   Box,
   Card,
@@ -114,7 +112,7 @@ const Agregar = () => {
 
     try {
       const res = await axios.post(
-        "https://musicproocyberedge.onrender.com/api/productos/create",
+        "http://localhost:3001/api/productos/create",
         postData,
         {
           headers: {
@@ -315,8 +313,10 @@ const Agregar = () => {
                     label="SubCategoría"
                   >
                     <MenuItem value="Guitarras Cuerpo Solido">Guitarras Cuerpo Solido</MenuItem>
+                    <MenuItem value="Guitarras électroacústica">Guitarras électroacústica</MenuItem>
                     <MenuItem value="Piano de media cola">Piano de media cola</MenuItem>
                     <MenuItem value="Bajos Cuatro Cuerdas">Bajos Cuatro Cuerdas</MenuItem>
+                    <MenuItem value="Teclados">Teclados</MenuItem>
                   </Select>
                 </FormControl>
               </Box>

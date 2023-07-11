@@ -40,7 +40,7 @@ const navItems = [
     icon: <HomeOutlined />,
   },
   {
-    text: "Tienda",
+    text: "Bodega",
     icon: null,
   },
   {
@@ -52,15 +52,15 @@ const navItems = [
     icon: <AddCircleOutlineOutlined />,
   },
   {
-    text: "Ventas",
+    text: "Integraciones",
     icon: null,
   },
   {
-    text: "Overview",
+    text: "Solicitudes",
     icon: <PointOfSaleOutlined />,
   },
   {
-    text: "Monthly",
+    text: "Solicitud",
     icon: <CalendarMonthOutlined />,
   },
 ];

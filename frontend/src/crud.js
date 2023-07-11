@@ -12,7 +12,7 @@ export default function GETProducts() {
     const fetchProducts = () => {
         const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
 
-        axios.get('https://musicproocyberedge.onrender.com/api/productos', {
+        axios.get('http://localhost:3001/api/productos', {
             headers: {
                 'auth-token': token, // Reemplaza 'token' con el valor real del token de autenticación
             },

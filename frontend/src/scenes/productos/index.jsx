@@ -38,12 +38,14 @@ const Productos = () => {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  //METODO LISTAR
   const fetchProducts = () => {
 
     const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
 
     axios
-    .get("https://musicproocyberedge.onrender.com/api/productos", {
+    .get("http://localhost:3001/api/productos", {
       headers: {
         "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
       },
@@ -61,7 +63,7 @@ const Productos = () => {
   const handleDelete = (id) => {
     const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
 
-    axios.delete(`https://musicproocyberedge.onrender.com/api/productos/${id}`, {
+    axios.delete(`http://localhost:3001/api/productos/${id}`, {
       headers: {
         "auth-token": token,
       },
@@ -84,12 +86,13 @@ const Productos = () => {
     setOpen(false);
   };
 
+  //METODO AGREGAR PRODUCTOS
   const handleSubmit = (event) => {
     event.preventDefault();
     const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
 
     axios
-      .put(`https://musicproocyberedge.onrender.com/api/productos/${editedProduct._id}`, {
+      .put(`http://localhost:3001/api/productos/${editedProduct._id}`, {
         nombre: editedProduct.nombre,
         precio: editedProduct.precio,
         marca: editedProduct.marca,
@@ -182,6 +185,8 @@ const Productos = () => {
                   alt="Product"
                 />
               </Box>
+
+              {/* BOTONES PARA MODAL */}
               <Box display="flex" justifyContent="space-between">
                 <Button
                   variant="contained"
@@ -200,6 +205,8 @@ const Productos = () => {
                   Eliminar
                 </Button>
               </Box>
+              
+              {/* MODAL */}
               <Modal
                 open={open}
                 onClose={handleClose}
