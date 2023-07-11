@@ -8,12 +8,8 @@ import {
   useTheme,
   Modal,
   Grid,
-<<<<<<< HEAD
   TextField,
   Alert
-=======
-  TextField
->>>>>>> e5445aae0b203ed14eb60021b1afa47880c7b492
 } from "@mui/material";
 
 import Header from "components/Header";
@@ -395,7 +391,6 @@ const Solicitudes = () => {
               </Grid>
               <Grid item xs={12} md={6} marginTop={"1rem"}>
 
-<<<<<<< HEAD
                 <Box display="flex" alignItems="center" >
                   <Typography variant="h6">
                     <span style={{ color: theme.palette.secondary[400] }}>
@@ -414,47 +409,6 @@ const Solicitudes = () => {
                   />
                 </Box>
               </Grid>
-=======
-              <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={"1rem"}>
-                <Typography variant="h6" marginLeft={"16px"}>
-                  <span style={{ color: theme.palette.secondary[400] }}>
-                    Nombre:
-                  </span>{" "}
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Nombre"
-                />
-              </Box>
-
-              <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={"1rem"}>
-                <Typography variant="h6" marginLeft={"16px"}>
-                  <span style={{ color: theme.palette.secondary[400] }}>
-                    Dirección:
-                  </span>{" "}
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Dirección"
-                />
-              </Box>
-
-              <Box display="flex" justifyContent="space-between" alignItems="center" marginTop={"1rem"}>
-                <Typography variant="h6" marginLeft={"4rem"}>
-                  <span style={{ color: theme.palette.secondary[400] }}>
-                    Nombre destino:
-                  </span>{" "}
-                </Typography>
-                <TextField
-                  variant="outlined"
-                  fullWidth
-                  placeholder="Nombre Destino"
-                />
-              </Box>
-              
->>>>>>> e5445aae0b203ed14eb60021b1afa47880c7b492
               <Grid item xs={12} >
                 <Box sx={{ marginTop: "2rem" }}>
                   <Card sx={{ borderRadius: "0.55rem" }}>
