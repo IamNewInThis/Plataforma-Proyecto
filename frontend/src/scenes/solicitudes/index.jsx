@@ -138,7 +138,7 @@ const Solicitudes = () => {
     axios.post("URL_DE_LA_API", data)
       .then((response) => {
         // Manejar la respuesta de la API
-        console.log(response.data);
+        console.log("solicitud enviada correctamente");
         // Realizar cualquier acción adicional después de enviar los detalles
       })
       .catch((error) => {
