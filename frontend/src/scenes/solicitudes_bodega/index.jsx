@@ -72,7 +72,6 @@ const SolicitudesBodega = () => {
         text: "El producto fue agregado de forma correcta",
         icon: "success",
       });
-
       setTimeout(() => {
         window.location.reload();
       }, 2000);

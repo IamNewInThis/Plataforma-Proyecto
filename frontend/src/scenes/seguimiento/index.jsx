@@ -48,20 +48,21 @@ const Seguimiento = () => {
 
   };
   const handleOpen = async () => {
+    const codigoSeguimiento = codigo.codigo_seguimiento; // Código de seguimiento a consultar
+    console.log(codigoSeguimiento)
     try {
-      const response = await axios.get("URL_DE_TU_API");
-      const codigoSeguimiento = response.data.codigo_seguimiento;
-  
-      // Realiza cualquier acción con el código de seguimiento obtenido
-      console.log(codigoSeguimiento);
+      const response = await axios.get(
+        `https://musicpro.bemtorres.win/api/v1/transporte/seguimiento/${codigoSeguimiento}`
+      );
+      console.log(response.data);
+      // Realiza cualquier acción con la respuesta de la API
     } catch (error) {
-      // Maneja cualquier error de la solicitud HTTP
       console.error(error);
     }
   
     setOpen(true);
   };
-
+  
   const handleClose = () => {
     setOpen(false);
   };

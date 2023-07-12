@@ -28,5 +28,4 @@ router.post('/create', verifyToken, async (req, res) => {
     }
 });
 
-
 module.exports = router;
