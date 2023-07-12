@@ -85,7 +85,7 @@ const Solicitudes = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/api/solicitud", {
+      .get("http://25.64.187.92:5000/api/productos/listarBodega", {
         headers: {
           "Content-Type": "application/json",
           "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
@@ -93,10 +93,10 @@ const Solicitudes = () => {
       })
       .then((response) => {
         const jsone = response.data; // Guardar la respuesta en una variable
-        console.log("estoy adentro", jsone[0].boletas);
+        console.log("estoy adentro", jsone.boletas);
 
 
-        const generatedSolicitudes = generarSolicitud(jsone[0].boletas);
+        const generatedSolicitudes = generarSolicitud(jsone.boletas);
         setBoletas(generatedSolicitudes);
       })
       .catch((error) => {
@@ -136,6 +136,36 @@ const Solicitudes = () => {
 
   const [modalBoleta, setModalBoleta] = useState(null);
 
+  //enviar codigo de seguimiento
+  const enviarSeguimiento = (responseData) => {
+    console.log(responseData);
+  
+    const postData = {
+      codigo_seguimiento: responseData.codigo_seguimiento
+    };
+    
+    
+  
+    axios.post('https://api.example.com/seguimiento', postData)
+      .then((response) => {
+        // Manejar la respuesta de la solicitud POST
+        console.log('Solicitud de seguimiento enviada correctamente:', response.data);
+        // Realizar acciones adicionales si es necesario
+      })
+      .catch((error) => {
+        // Manejar los errores de la solicitud POST
+        console.error('Error al enviar la solicitud de seguimiento:', error);
+        // Realizar acciones adicionales en caso de error
+      });
+  };
+  
+  // Ejemplo de uso
+  const exampleResponseData = {
+    // Datos de la respuesta que deseas enviar en la solicitud de seguimiento
+    // Ajusta esto según la estructura de la respuesta
+  };
+  
+  enviarSeguimiento(exampleResponseData);
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -164,8 +194,11 @@ const Solicitudes = () => {
     // Hacer la solicitud HTTP a la API para enviar los detalles
     axios.post("https://musicpro.bemtorres.win/api/v1/transporte/solicitud", data)
       .then((response) => {
-        // Manejar la respuesta de la API
+        const responseData = response.data;
+
+        console.log(responseData);
         console.log("solicitud enviada correctamente");
+        enviarSeguimiento(responseData);
         // Realizar cualquier acción adicional después de enviar los detalles
       })
       .catch((error) => {
@@ -354,7 +387,7 @@ const Solicitudes = () => {
                 </Typography>
               </Grid>
               <Grid item xs={12} md={6} marginTop={"1rem"}>
-                <Box display="flex"  alignItems="center">
+                <Box display="flex" alignItems="center">
                   <Typography variant="h6">
                     <span style={{ color: theme.palette.secondary[400] }}>
                       Nombre:
@@ -372,7 +405,7 @@ const Solicitudes = () => {
                 </Box>
               </Grid>
               <Grid item xs={12} md={6} marginTop={"1rem"}>
-                <Box display="flex"  alignItems="center" >
+                <Box display="flex" alignItems="center" >
                   <Typography variant="h6" >
                     <span style={{ color: theme.palette.secondary[400] }}>
                       Dirección:
@@ -404,7 +437,7 @@ const Solicitudes = () => {
                     value={formData.nombreDestino.value}
                     type="text"
                     onChange={(e) => handleInputChange(e, "nombreDestino")}
-                    sx={{   width: "100%" }}
+                    sx={{ width: "100%" }}
 
                   />
                 </Box>

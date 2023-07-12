@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Divider,
   Drawer,
   IconButton,
   List,
@@ -14,22 +13,15 @@ import {
   Button,
 } from "@mui/material";
 import {
-  SettingsOutlined,
   ChevronLeft,
   ChevronRightOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
-  GroupsOutlined,
-  ReceiptLongOutlined,
-  PublicOutlined,
   PointOfSaleOutlined,
-  TodayOutlined,
-  CalendarMonthOutlined,
-  AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
-  PieChartOutlined,
   AddCircleOutlineOutlined,
   LogoutOutlined,
+  AddShoppingCart,
+  LocalShipping
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
@@ -61,7 +53,7 @@ const navItems = [
   },
   {
     text: "Solicitudes-Bodega",
-    icon: <CalendarMonthOutlined />,
+    icon: <AddShoppingCart />,
   },
   {
     text: "Transporte",
@@ -70,6 +62,10 @@ const navItems = [
   {
     text: "Solicitudes",
     icon: <PointOfSaleOutlined />,
+  },
+  {
+    text: "Seguimiento",
+    icon: <LocalShipping />,
   },
 ];
 

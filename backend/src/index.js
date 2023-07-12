@@ -9,8 +9,8 @@ require('dotenv').config()
 // import routes
 const verifyToken = require('./routes/validate-token');
 const solicitudRouter = require('./routes/solicitud');
-
-
+const bodega = require('./routes/solicitudBodega');
+ 
 
 const swaggerUI = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
@@ -50,6 +50,10 @@ app.use('/api-doc',swaggerUI.serve,swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 app.use('/api' ,verifyToken ,require('./routes/task.routes'));
 app.use('/user',require('./routes/auth'));
 app.use('/api/solicitud',verifyToken, solicitudRouter);
+app.use('/api/solicitudBodega',verifyToken, bodega);
+app.use('/apiF/' ,verifyToken ,require('./routes/task.routesF'));
+app.use('/api/seguimiento', verifyToken, require('./routes/seguimiento.routes'))
+
 
 
 //static files 

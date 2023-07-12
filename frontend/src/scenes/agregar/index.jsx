@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,} from "react";
 import axios from "axios";
 import Header from "components/Header";
 import {
@@ -112,7 +112,7 @@ const Agregar = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3001/api/productos/create",
+        "http://localhost:3001/apiF/productos/create",
         postData,
         {
           headers: {
@@ -241,7 +241,7 @@ const Agregar = () => {
                   onChange={handleImageChange}
                 ></input>
               </Box>
-              <img src={selectedImage} width={100} height={100} />
+              <img src={selectedImage} width={100} height={100} alt="" />
             </CardContent>
           </Card>
 

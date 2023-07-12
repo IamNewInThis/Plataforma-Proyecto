@@ -18,15 +18,98 @@ import {
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Swal from "sweetalert2";
 
+
+
 const SolicitudesBodega = () => {
   const theme = useTheme();
-
-  // ADAPTART PANTALLA
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.currentTarget;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: {
+        ...prevFormData[name],
+        value: value,
+        isValid: value.trim() !== "",
+      },
+    }));
+  };
+  const [formData, setFormData] = useState({
+    nombre: { value: "", isValid: false },
+    cantidad: { value: "", isValid: false },
+  });
+  
+
+  const handlePost = async (event) => {
+    event.preventDefault();
+    const token = localStorage.getItem("token");
+
+    if (!formData.nombre.isValid || !formData.cantidad.isValid) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
+    //crear solicitud
+    const postData = new FormData();
+    postData.append("name", formData.nombre.value);
+    postData.append("cantidad", parseInt(formData.cantidad.value));
+    
+    try {
+      const res = await axios.post(
+        "http://localhost:3001/api/solicitudBodega/create",
+        postData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        }
+      );
+
+
+      Swal.fire({
+        title: "Producto Agregado",
+        text: "El producto fue agregado de forma correcta",
+        icon: "success",
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (e) {
+      alert(e);
+    }
+  };
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+
+    //METODO LISTAR
+    const fetchProducts = () => {
+
+      const token = localStorage.getItem('token'); // Obtener el token del almacenamiento local
+  
+      axios
+      .get("http://localhost:3001/api/solicitudBodega", {
+        headers: {
+          "auth-token": token, // Incluir el token en el encabezado como 'Authorization'
+        },
+      })
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  
+    };
+
 
   return (
     <Box m={"1.5rem 2.5rem"}>
-      <Header titulo={"Solicitudes"}></Header>
+      <Header titulo={"Solicitudes a Bodega"}></Header>
       <form>
         <Box
           mt="20px"
@@ -60,6 +143,8 @@ const SolicitudesBodega = () => {
                     name="nombre"
                     placeholder="Nombre Producto"
                     fullWidth
+                    value={formData.nombre.value}
+                    onChange={handleInputChange}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
@@ -69,10 +154,12 @@ const SolicitudesBodega = () => {
                   <TextField
                     color="success"
                     variant="outlined"
-                    type="text"
-                    name="nombre"
+                    type="number"
+                    name="cantidad"
                     fullWidth
                     placeholder="Cantidad"
+                    value={formData.cantidad.value}
+                    onChange={handleInputChange}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -80,7 +167,8 @@ const SolicitudesBodega = () => {
                     variant="contained"
                     color="success"
                     fullWidth
-                    onClick={() => console.log("Enviar solicitud")}
+                    type="submit"
+                    onClick={handlePost}
                   >
                     Enviar Solicitud
                   </Button>
@@ -102,45 +190,36 @@ const SolicitudesBodega = () => {
           "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
         }}
       >
-        <Card
-          sx={{
-            backgroundColor: theme.palette.background.alt,
-            borderRadius: "0.55rem",
-          }}
-        >
-          <CardContent>
-            <Typography variant="h5" component={"div"} marginRight={"10px"}>
-              ID:
-            </Typography>
+       {products.map((product, index) => (
+  <Card
+    key={index}
+    sx={{
+      backgroundColor: theme.palette.background.alt,
+      borderRadius: "0.55rem",
+    }}
+  >
+    <CardContent>
+      <Typography variant="h5" component="div">
+        Nombre Producto: {product.name}
+      </Typography>
 
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ mb: "1.5rem" }}
-              color={theme.palette.secondary[400]}
-            >
-              Hola
-            </Typography>
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{ mb: "1.5rem" }}
+        color={theme.palette.secondary[400]}
+      >
+        Cantidad: {product.cantidad}
+      </Typography>
 
-            <Typography variant="h5" component={"div"} marginRight={"10px"}>
-              Sucursal:
-            </Typography>
-
-            <Typography
-              variant="h5"
-              component="div"
-              sx={{ mb: "1.5rem" }}
-              color={theme.palette.secondary[400]}
-            >
-              Hola
-            </Typography>
-            <Box display="flex" justifyContent="space-between">
-              <Button variant="contained" color="success" fullWidth>
-                Detalle
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
+      <Box display="flex" justifyContent="space-between">
+        <Button variant="contained" color="success" fullWidth>
+          Detalle
+        </Button>
+      </Box>
+    </CardContent>
+  </Card>
+))}
       </Box>
     </Box>
   );
