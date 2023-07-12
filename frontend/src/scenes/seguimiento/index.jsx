@@ -20,8 +20,8 @@ const Seguimiento = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [pedidoEstado, setPedidoEstado] = useState("En proceso");
-  const [barraProgreso, setBarraProgreso] = useState(31);
+  const [pedidoEstado, setPedidoEstado] = useState("");
+  const [barraProgreso, setBarraProgreso] = useState(50);
 
   const [codigo, setCodigo] = useState([]);
   useEffect(() => {
@@ -47,22 +47,39 @@ const Seguimiento = () => {
     });
 
   };
-  const handleOpen = async () => {
-    const codigoSeguimiento = codigo.codigo_seguimiento; // Código de seguimiento a consultar
+  const handleOpen = async (codigo) => {
+    const codigoSeguimiento = codigo
     console.log(codigoSeguimiento)
+  
     try {
       const response = await axios.get(
         `https://musicpro.bemtorres.win/api/v1/transporte/seguimiento/${codigoSeguimiento}`
       );
-      console.log(response.data);
-      // Realiza cualquier acción con la respuesta de la API
+      const estado = response.data.result.estado; // Obtener el valor del estado desde response.data.result
+      setPedidoEstado(estado)
+      switch (estado) {
+        case "En proceso":
+          setBarraProgreso(31);
+          break;
+        case "En camino":
+          setBarraProgreso(50);
+          break;
+        case "Entregado":
+          setBarraProgreso(100);
+          break;
+        default:
+          setBarraProgreso(31);
+          break;
+      }
+
     } catch (error) {
+      // Maneja cualquier error de la solicitud HTTP
       console.error(error);
     }
   
     setOpen(true);
   };
-  
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -135,7 +152,7 @@ const Seguimiento = () => {
             </Typography>
 
             <Box display="flex" justifyContent="space-between">
-              <Button variant="contained" color="success" fullWidth onClick={handleOpen}>
+              <Button variant="contained" color="success" fullWidth onClick={() => handleOpen(codigo.codigo_seguimiento)}>
                 Consultar
               </Button>
             </Box>
@@ -189,7 +206,6 @@ const Seguimiento = () => {
                 variant={pedidoEstado === "En proceso" ? "contained" : "outlined"}
                 color="success"
                 fullWidth
-                onClick={() => handleEstadoClick("En proceso")}
               >
                 En proceso
               </Button>
@@ -200,7 +216,6 @@ const Seguimiento = () => {
                 variant={pedidoEstado === "En camino" ? "contained" : "outlined"}
                 color="success"
                 fullWidth
-                onClick={() => handleEstadoClick("En camino")}
               >
                 En camino
               </Button>
@@ -211,7 +226,6 @@ const Seguimiento = () => {
                 variant={pedidoEstado === "Entregado" ? "contained" : "outlined"}
                 color="success"
                 fullWidth
-                onClick={() => handleEstadoClick("Entregado")}
               >
                 Entregado
               </Button>

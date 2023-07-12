@@ -139,14 +139,19 @@ const Solicitudes = () => {
   //enviar codigo de seguimiento
   const enviarSeguimiento = (responseData) => {
     console.log(responseData);
-  
+
     const postData = {
       codigo_seguimiento: responseData.codigo_seguimiento
     };
-    
-    
-  
-    axios.post('https://api.example.com/seguimiento', postData)
+    const token = localStorage.getItem("token");
+
+    axios.post('http://localhost:3001/api/seguimiento/create', postData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+      })
       .then((response) => {
         // Manejar la respuesta de la solicitud POST
         console.log('Solicitud de seguimiento enviada correctamente:', response.data);
@@ -158,13 +163,13 @@ const Solicitudes = () => {
         // Realizar acciones adicionales en caso de error
       });
   };
-  
+
   // Ejemplo de uso
   const exampleResponseData = {
     // Datos de la respuesta que deseas enviar en la solicitud de seguimiento
     // Ajusta esto según la estructura de la respuesta
   };
-  
+
   enviarSeguimiento(exampleResponseData);
   const handleSubmit = (event) => {
     event.preventDefault();
